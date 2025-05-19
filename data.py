@@ -1,3 +1,7 @@
+'''
+Basic template for the prompt. 
+'''
+
 lore = """
 ## Aethel: A World of Neon Decay
 
