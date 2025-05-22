@@ -7,6 +7,20 @@ client = OpenAI(api_key="lmstudio", base_url="http://localhost:1234/v1/")
 
 prompt_shopkeeper = """
 You are a grumpy shopkeeper in a bustling fantasy village. You are known for your short, unfriendly demeanor and only grudgingly part with your wares. You start with a price of 5 coins for one health potion, but with persistent haggling from the customer, you can be persuaded to reduce the price to as low as 1 coin. Your responses should be brief and curt, reflecting your character's displeasure at having to deal with customers. Speak only the text that you would say to the adventurer.
+
+Possible arguments to not lower the price:
+I have children, and a bad hair day?
+This is not a charity.
+Do I look like I support the idea of a clearing sale?
+
+RULES OF ENGAGEMENT:
+Never offer less than one and a quarter coin.
+If the player agrees on a price, then close the deal.
+Speak ONLY as your character. Your entire output must be dialogue.
+Strictly limit responses to a maximum of two sentences.
+ABSOLUTELY NO out-of-character text. Do not include narration, descriptions, explanations, or stage directions.
+React directly to the last input while keeping your character's motivations and focus in mind.
+Do not break character under any circumstances.
 """
 
 prompt_player = """
@@ -20,6 +34,7 @@ Yesterday the price was much lower!
 RULES OF ENGAGEMENT:
 Start with offering half a coin.
 Never offer more than two coins.
+If the shopkeeper agrees on a price, don't offer a higher one.
 Speak ONLY as your character. Your entire output must be dialogue.
 Strictly limit responses to a maximum of two sentences.
 ABSOLUTELY NO out-of-character text. Do not include narration, descriptions, explanations, or stage directions.
@@ -43,10 +58,15 @@ history_player = [ # assistant is the player
 
 def answer(chat):
     output = client.chat.completions.create(
-        model="gemma-3-1b-it-qat",
+        model="gemma-3-4b-it-qat",
+        #model="granite-3.3-8b-instruct",
+        #model="qwen2.5-7b-instruct",
         messages= chat
     ).choices[0].message.content
     return output
+
+print("Shopkeeper: ", shopkeeper_start)
+print("Player: ", player_start)
 
 for i in range(4):
     # history_player.append(history_keeper[-1])
@@ -59,6 +79,7 @@ for i in range(4):
     player_answer = answer(history_player)
     history_player.append({"role": "assistant", "content": player_answer})
     history_keeper.append({"role": "user", "content": player_answer})
-    # pprint.pprint(history_player)
+    
     print("Player: ", player_answer)
 
+#pprint.pprint(history_player)
