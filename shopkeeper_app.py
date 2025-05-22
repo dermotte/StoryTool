@@ -28,7 +28,9 @@ MODEL_OPTIONS = [
     "gemma-3-4b-it-qat",
     "granite-3.3-8b-instruct",
     "qwen2.5-7b-instruct",
-    "qwen3-4b"
+    "qwen3-4b",
+    "deepseek-r1-distill-qwen-1.5b",
+    "llama-3.2-3b-instruct"
 ]
 
 shopkeeper_prompt = """You are a grumpy shopkeeper in a bustling fantasy village. You are known for your short, unfriendly demeanor and only grudgingly part with your wares. You start with a price of 5 coins for one health potion, but with persistent haggling from the customer, you can be persuaded to reduce the price to as low as 1 coin. Your responses should be brief and curt, reflecting your character's displeasure at having to deal with customers. Speak only the text that you would say to the adventurer.
@@ -79,6 +81,8 @@ def answer(client, chat, model):
         model=model,
         messages=chat
     ).choices[0].message.content
+    if "</think>" in output:
+        output = output.split("</think>", 1)[-1]
     return output
 
 def run_negotiation(model, turns, shopkeeper_prompt, player_prompt, shopkeeper_start, player_start):
